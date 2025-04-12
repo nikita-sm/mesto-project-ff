@@ -1,3 +1,5 @@
+const template = document.querySelector("#card-template");
+
 export const initialCards = [
     {
       name: "Архыз",
@@ -25,17 +27,17 @@ export const initialCards = [
     }
 ];
 
-const template = document.querySelector("#card-template");
-
-export function createCard(item, fn, likeFn, imageFn){
+export function createCard(item, template, deleteFn, likeFn, imageFn){
   const userTemplate = template.content;
   const cardElement = userTemplate.querySelector(".places__item").cloneNode(true);
   const imgCard = cardElement.querySelector(".card__image");
+  imgCard.classList.add("popup-btn");
+  imgCard.setAttribute("data-popup", "popup_type_image");
   const titleCard = cardElement.querySelector(".card__title");
   const deleteButton = cardElement.querySelector(".card__delete-button");
   const likeButton = cardElement.querySelector(".card__like-button");
   deleteButton.addEventListener("click", function(){
-     fn(cardElement);
+    deleteFn(cardElement);
   });
   likeButton.addEventListener("click", likeFn);
   imgCard.addEventListener("click", imageFn)

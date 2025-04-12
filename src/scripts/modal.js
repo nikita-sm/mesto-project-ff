@@ -1,77 +1,48 @@
-const popups = {
-    "card__image": "popup_type_image",
-    "profile__edit-button": "popup_type_edit",
-    "profile__add-button": "popup_type_new-card"
-}
+export function openPopup(el){
+    const currentPopupClass = el.getAttribute("data-popup");
+    const  currentPopup = document.querySelector(`.${currentPopupClass}`);
+    currentPopup.classList.add("popup_is-opened");
+    const closeBtn = currentPopup.querySelector(".popup__close");
 
-Object.keys(popups).forEach(function(elements){
-    [...document.querySelectorAll(`.${elements}`)].forEach(function(item){
-        item.addEventListener("click", function(el){
-            el.preventDefault();
-            openPopup(el);
-        })
-    });
-});
-
-function openPopup(btn){
-    const btnClass = btn.target.classList[0];
-    const popupElement = document.querySelector(`.${popups[btnClass]}`);
-    popupElement.classList.add("popup_is-opened");
-
-    const editProfileForm = popupElement.querySelector("[name=edit-profile]");
-    if(editProfileForm) {
-        fillInputEditForm(editProfileForm);
+    const handleFormEditProfile= currentPopup.querySelector("[name=edit-profile]");
+    
+    //Если открыти форму с редактированием профиля, то заполнить поля данной формы данными из профиля
+    if(handleFormEditProfile) {
+        const nameInput = handleFormEditProfile["name"];
+        const descriptionInput = handleFormEditProfile["description"];
+    
+        nameInput.value = document.querySelector(".profile__title").innerText;
+        descriptionInput.value = document.querySelector(".profile__description").innerText;
     }
+    /*Закрытие попапа на крестик*/
+    closeBtn.addEventListener("click", function(){
+        closePopup(currentPopup);
+    });
 
-    handleClosePopupButton(popupElement);
+    /*Закрытие попапа на ESC*/
+    document.addEventListener("keydown", handleEscKeyUp);
 
-    handlePopupOverlay(popupElement);
-
-    document.addEventListener("keyup", handleEscKeyUp)
+    /*Закрытие попапа на Оверлей*/
+    currentPopup.addEventListener("click", handlePopupOverlay);
 }
 
+/*Закрытие ажатием на крестик*/
+export function closePopup(popup){
+    popup.classList.remove("popup_is-opened");
+    document.removeEventListener("click", handleEscKeyUp);
+}
+
+/*Закрытие при нажатии на ESC*/
 function handleEscKeyUp(evt){
+    
     evt.stopPropagation();
     if(evt.key === "Escape") {
-        const popup = document.querySelector(".popup_is-opened");
-        closePopup(popup);
+        closePopup(document.querySelector(".popup_is-opened"));
     }
-}
-
-/*Нажатие на кнопку закрытие -  крестик*/
-function handleClosePopupButton(popup){
-    popup.querySelector(".popup__close").addEventListener("click", function(){
-        closePopup(popup);
-    });
 }
 
 /*Нажатие на оверлей*/
-function handlePopupOverlay(popup){
-    popup.addEventListener("click", function(evt) {
-        evt.stopPropagation();
-        const arrayClasses = Array.from(evt.target.classList);
-        if(arrayClasses.includes("popup")){
-            closePopup(popup);
-        }
-    });
-}
-
-function closePopup(element){
-    element.classList.remove("popup_is-opened");
-    document.removeEventListener("keyup", handleEscKeyUp);
-
-}
-
-/*Находим форму*/
-
-const profile__title = document.querySelector(".profile__title");
-const profile__description = document.querySelector(".profile__description")
-
-function fillInputEditForm(form){
-    const nameInput = form["name"];
-    const descriptionInput = form["description"];
-    
-    nameInput.value = profile__title.innerText;
-    descriptionInput.value = profile__description.innerText;
-    
+function handlePopupOverlay(evt){
+    evt.stopPropagation();
+    closePopup(evt.target);
 }
