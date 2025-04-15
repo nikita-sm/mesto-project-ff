@@ -1,5 +1,3 @@
-/* const template = document.querySelector("#card-template"); */
-
 export const initialCards = [
     {
       name: "Архыз",
