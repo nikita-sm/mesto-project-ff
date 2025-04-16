@@ -20,8 +20,8 @@ const editForm = document.querySelector("[name=edit-profile]");
 const addForm  = document.querySelector("[name=new-place]");
 
 /*Поиск полей */
-const inputNameFormNewCard = document.querySelector("[name=place-name]"); /*inputNameFormNewCard*/
-const inputLinkFormNewCard = document.querySelector("[name=link]"); /*inputLinkFormNewCard*/
+const inputNameFormNewCard = document.querySelector("[name=place-name]");
+const inputLinkFormNewCard = document.querySelector("[name=link]");
 
 /*Попапы*/
 const popupEditProfile = document.querySelector(".popup_type_edit");
@@ -52,8 +52,8 @@ handleCloseOverlayAndButton();
 
 btnPopupEditProfile.addEventListener("click", function(evt){
     evt.stopPropagation();
-    editForm.name.value = profilTitle.innerHTML;
-    editForm.description.value = profileDescription.innerHTML;
+    editForm.name.value = profilTitle.textContent;
+    editForm.description.value = profileDescription.textContent;
     openPopup(popupEditProfile);
 });
 
@@ -82,10 +82,6 @@ function handleFormAddNewCard(evt) {
     };
 
     const newCard = createCard(item, template, deleteCard, handleLikeBtn, handleImageCard);
-    newCard.querySelector(".popup-btn").addEventListener("click", function(){
-        evt.stopPropagation();
-        openPopup(popupImage);
-    });
     list.insertBefore(newCard, list.firstChild);
     evt.target.reset();
     closePopup(popupNewCard);
