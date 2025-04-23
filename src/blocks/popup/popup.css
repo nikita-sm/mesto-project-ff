@@ -21,3 +21,32 @@
   right: 0;
   z-index: 10;
 }
+
+.popup__input_type_error {
+  border-bottom: 1px solid #FF0000;
+}
+
+/*Общая стилизация элементов ошибок*/
+.error-element {
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  min-height: 24px;
+  height: 24px;
+}
+
+
+/*Сообщение об ошибке*/
+.popup__error_visible {
+  color: #FF0000;
+}
+
+/* .popup__button_disabled {
+  background: transparent;
+  border: 1px solid #0000;
+}
+
+.popup__button_disabled:hover {
+  background: transparent;
+  border: 1px solid #0000;
+} */

@@ -1,8 +1,10 @@
 # Проектная работа Mesto
 
+Ссылка на опубликованный на GH проект Mesto => https://nikita-sm.github.io/mesto-project-ff/
+
 Ссылка на мой репозиторий: https://github.com/nikita-sm/mesto-project-ff
 
-Ссылка на мой репозиторий Шестого спринта с расширением: https://github.com/nikita-sm/mesto-project-ff.git
+Ссылка на мой репозиторий Седьмого спринта с расширением: https://github.com/nikita-sm/mesto-project-ff.git
 
 Ссылка на документацию (403 ошибка): https://docs.github.com/en/get-started/getting-started-with-git/managing-remote-repositories?platform=windows
 

@@ -5,3 +5,11 @@
   background: #fff;
   padding: 25px 20px;
 }
+
+.card__description-likes {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+
