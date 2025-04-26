@@ -14,7 +14,6 @@ export function enableValidation(parameters){
 function setEventListeners(formELement, inputClass, inpErrClass, errClass, submitButtonSelector, inactiveButtonClass,){
     const inputList = Array.from(formELement.querySelectorAll(inputClass));
     const buttonElement = formELement.querySelector(submitButtonSelector);
-    console.log(buttonElement);
     inputList.forEach(function(input){
         input.addEventListener("input", function(evt){
             isValid(formELement, input, inpErrClass, errClass);
@@ -25,12 +24,16 @@ function setEventListeners(formELement, inputClass, inpErrClass, errClass, submi
 
 /*Валидация формы*/
 function isValid(formELement, inputElement, inpErrClass, errClass){
+    if(inputElement.validity.patternMismatch){
+        showInputErrorMessage(formELement, inputElement, inputElement.dataset.errorMessage, inpErrClass, errClass);
+        return;
+    } 
+    
     if(!inputElement.validity.valid) {
         showInputErrorMessage(formELement, inputElement, inputElement.validationMessage, inpErrClass, errClass);
     } else {
         hideInputErrorMessage(formELement, inputElement, inpErrClass, errClass);
     } 
-    /* console.log(inputElement.validationMessage, inputElement.dataset.errorMessage); */
 }
 
 function showInputErrorMessage(formElement, inputElement, errorMessage, inpErrClass, errClass){
@@ -40,7 +43,7 @@ function showInputErrorMessage(formElement, inputElement, errorMessage, inpErrCl
     errorElement.classList.add(errClass);
 }
 
-function hideInputErrorMessage(formElement, inputElement, inpErrClass, errClass){
+export function hideInputErrorMessage(formElement, inputElement, inpErrClass, errClass){
     const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
     inputElement.classList.remove(inpErrClass);
     errorElement.textContent = "";
@@ -63,11 +66,24 @@ function toogleButtonState(inputList, buttonELement, disabledButtonClass){
     }
 }
 
-export function clearValidation(popup, errorSelector) {
-    const errorList = Array.from(popup.querySelectorAll(errorSelector));
-    /*Удаляем у всех элементов ошибки текст*/
-    errorList.forEach(function(errorElement){
-        errorElement.textContent = "";
+export function clearValidation(profileForm, validationConfig) {
+    const errorElements = profileForm.querySelectorAll(`.${validationConfig.errorClass}`);
+    /*Очистил поля span*/
+    Array.from(errorElements).forEach(errElement => {
+        errElement.classList.remove(validationConfig.errorClass);
+        errElement.textContent = "";
     });
+    const inputElements = profileForm.querySelectorAll(`${validationConfig.inputSelector}`);
+    /*Очистилил поля input от текстак*/
+    Array.from(inputElements).forEach((inpElement) => {
+        inpElement.value = "";
+        inpElement.classList.remove(validationConfig.inputErrorClass);
+    });
+
+    if(profileForm.id === 'edit-profile'){
+        profileForm.elements["name"].value = validationConfig.title;
+        profileForm.elements["description"].value = validationConfig.description;
+        return;
+    }
 }
 

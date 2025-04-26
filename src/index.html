@@ -37,7 +37,7 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" name="edit-profile">
+      <form class="popup__form" name="edit-profile" id="edit-profile">
         <input 
               minlength="2"
               maxlength="40"
@@ -93,10 +93,6 @@
                   class="error-element"
                   ></span>
         <input 
-              minlength=""
-              maxlength=""
-              pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/.+"
-              data-error-message="Не соответствует шаблону: https://mail.ru или http://mail.ru"
               type="url" 
               name="link" 
               class="popup__input popup__input_type_url" 
@@ -107,7 +103,7 @@
             id="new-input-url-error"
             class="error-element"
           ></span>
-        <button type="submit" class="button popup__button">Сохранить</button>
+        <button type="submit" class="button popup__button popup__button_disabled" disabled>Сохранить</button>
       </form>
     </div>
   </div>
@@ -127,10 +123,6 @@
     <h3 class="popup__title">Обновить аватар</h3>
     <form class="popup__form" name="update-avatar">
       <input 
-        minlength=""
-        maxlength=""
-        pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/.+"
-        data-error-message="Не соответствует шаблону: https://mail.ru или http://mail.ru"
         type="url" 
         name="profile-avatar" 
         class="popup__input popup__input_type_url" 

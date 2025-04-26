@@ -1,206 +1,101 @@
-import { list, template } from "./index";
-import { createCard, deleteCard, handleLikeBtn } from "./card";
-import { handleImageCard } from "./index";
-const promise1 = fetch("https://nomoreparties.co/v1/wff-cohort-36/users/me", {
-    headers: {
-         authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-         method: "GET"
-    }
-});
-
-const promise2 = fetch("https://nomoreparties.co/v1/wff-cohort-36/cards", {
-    headers: {
-         authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-         method: "GET"
-    }
-});
-
-export function requestProfileAndCards(titleProfile, descriptionProfile, logoProfile, list, createCard, template, deleteCard, handleLikeBtn, handleImageCard ){
-    Promise.all([promise1, promise2])
-        .then(res => {
-          const allOk = res.every(response => response.ok);
-          if(!allOk) {
-            throw new Error('Где-то в промисах ошибка');
-          }
-          return Promise.all(res.map(res => res.json()));
-            
-        })
-        .then(data => {
-            const myId = data[0]._id;
-            /* console.log(myId); */
-            /*Начало отрисовки данных в профиле*/
-            const {name, about, avatar} = data[0];
-            titleProfile.textContent = name;
-            descriptionProfile.textContent = about;
-            logoProfile.style.backgroundImage = `url(${avatar})`;
-            /*Конец отрисовки данных в профиле*/
-
-            /*Отрисовка карточек на странице*/
-            console.log(data);
-            data[1]
-            .map(({name, link, likes, owner, _id}) => {
-                const isMyCard = myId === owner._id
-                return {
-                    name, 
-                    link,
-                    likes,
-                    isMyCard,
-                    _id,
-                    myId,
-                }
-            })
-            .forEach(function(item){
-                list.append(createCard(item, template, deleteCard, handleLikeBtn, handleImageCard));
-            });
-        })
-        .catch(err => {
-          console.log(err);
-        })
+/*Базовая конфигурация*/
+const config = {
+  baseUrl: "https://nomoreparties.co/v1/wff-cohort-36",
+  headers: {
+    authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
+    'Content-Type': 'application/json'
+  }
 }
 
-export function requestUpdateProfile(name, about, btnElement){
-    btnElement.textContent = "Сохранение...";
-    fetch('https://nomoreparties.co/v1/wff-cohort-36/users/me', {
-        method: 'PATCH',
-        headers: {
-          authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          about: about
-        })
-      })
-      .then(res => {
-        if(res.ok){
-          return res.json();
-        }
-        return Promise.reject(`Ошибка ${res.status}`);
-      })
-      .then(res => {
-        btnElement.textContent = "Сохранено";
-        /* console.log(res) */
-      })
-      .catch(err => {
-        console.log(err)
-      })
+function handleResposneServer(resposneServer){
+  if(resposneServer.ok) {
+    return resposneServer.json();
+  };
+  return Promise.reject(`Ошибка ${resposneServer.status}`);
 }
-
-export function requestNewCard(name, link, btnElement){
-    btnElement.textContent = "Сохранение...";
-    fetch('https://nomoreparties.co/v1/wff-cohort-36/cards', {
-        method: 'POST',
-        headers: {
-          authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          link: link,
-        })
-      })
-      .then(res => {
-        if(res.ok){
-          return res.json();
-        }
-        return Promise.reject(`Ошибка ${res.status}`);
-      })
-      .then(res => {
-        btnElement.textContent = "Сохранить";
-        const newItem = {
-          name, 
-          link,
-          likes: [],
-          isMyCard: true,
-          _id: res._id,
-          myId: res.owner._id,
-        };
-        const newCard = createCard(newItem, template, deleteCard, handleLikeBtn, handleImageCard);
-        list.insertBefore(newCard, list.firstChild);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-}
-
-/*Импорт этой функции будет внутри card.js*/
-export function requestDeleteCard(id){
-  fetch(`https://nomoreparties.co/v1/wff-cohort-36/cards/${id}`, {
-    method: 'DELETE',
-    headers: {
-      authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => {
-    if(res.ok){
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  })
-  .then(res => {
-    console.log(res);
-  })
-  .catch(err => {
-    console.log(err
-
-    );
-  })
-}
-
-export function requestPutLikeCard(id, likeElement){
-  fetch(`https://nomoreparties.co/v1/wff-cohort-36/cards/likes/${id}`, {
-    method: 'PUT',
-    headers: {
-      authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => {
-    return res.json();
-  })
-  .then(res => {
-    const likeCount = res.likes.length;
-    likeElement.textContent = likeCount;
-  })
-}
-
-export function requestDeleteLikeCard(id, likeElement){
-  fetch(`https://nomoreparties.co/v1/wff-cohort-36/cards/likes/${id}`, {
-    method: 'DELETE',
-    headers: {
-      authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => {
-    return res.json();
-  })
-  .then(res => {
-    console.log(res);
-    const likeCount = res.likes.length;
-    likeElement.textContent = likeCount;
-  })
+/*Запрос на получение инфомации о пользователе*/
+export  const getUserInfo = () => {
+  return fetch(`${config.baseUrl}/users/me`, {
+    headers: config.headers,
+    method: "GET"
+  }).then(handleResposneServer)
 };
 
-export function requestUpdateAvatar(url, logoProfile, btnElement){
-  btnElement.textContent = "Сохранение...";
-  fetch(`https://nomoreparties.co/v1/wff-cohort-36/users/me/avatar`, {
+/*Запрос на получение карточек с сервера*/
+const getInitialCards = () => {
+  return fetch(`${config.baseUrl}/cards`, {
+    headers: config.headers,
+    method: "GET"
+  }).then(handleResposneServer);
+};
+
+export const requestProfileAndCards = () => {
+  return Promise.all([getUserInfo(), getInitialCards()])
+}
+
+/*Запрос на обновления данных в профиле*/
+export function requestUpdateProfile(name, about, ){
+    return fetch(`${config.baseUrl}/users/me`, {
+        headers: config.headers,  
+        method: 'PATCH',
+        body: JSON.stringify({
+          name,
+          about,
+        }),
+      }).then(handleResposneServer);
+}
+
+/*Запрос на добавление новой карточки*/
+export function requestNewCard(name, link){
+  return fetch(`${config.baseUrl}/cards`, {
+    headers: config.headers,  
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      link,
+    }),
+  }).then(handleResposneServer);
+}
+
+/*Запрос на удаление текущей карточки. Вызов в файле card.js*/
+export function requestDeleteCard(id){
+  return fetch(`${config.baseUrl}/cards/${id}`, {
+    headers: config.headers,  
+    method: 'DELETE',
+    body: JSON.stringify({
+     id
+    }),
+  }).then(handleResposneServer);
+};
+
+
+export function requestPutLikeCard(id){
+  return fetch(`${config.baseUrl}/cards/likes/${id}`, {
+    headers: config.headers,  
+    method: 'PUT',
+    body: JSON.stringify({
+     id
+    }),
+  }).then(handleResposneServer);
+}
+
+export function requestDeleteLikeCard(id){
+  return fetch(`${config.baseUrl}/cards/likes/${id}`, {
+    headers: config.headers,  
+    method: 'DELETE',
+    body: JSON.stringify({
+     id
+    }),
+  }).then(handleResposneServer);
+};
+
+export function requestUpdateAvatar(url){
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    headers: config.headers,  
     method: 'PATCH',
-    headers: {
-      authorization: '4b69a0c0-a05b-4d1b-831f-c7aa3eb401d3',
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify({
       avatar: url,
-    })
-  })
-  .then(res => {
-    return res.json();
-  })
-  .then(res => {
-    btnElement.textContent = "Сохранение";
-    logoProfile.style.backgroundImage = `url(${url})`;
-  })
+    }),
+  }).then(handleResposneServer);
 };
   

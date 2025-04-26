@@ -31,8 +31,9 @@
   display: block;
   font-weight: 400;
   font-size: 12px;
-  min-height: 24px;
-  height: 24px;
+  min-height: 34px;
+  margin-top: 10px;
+  /* height: 24px; */
 }
 
 
