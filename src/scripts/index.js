@@ -1,5 +1,4 @@
 import "../pages/index.css";
-import { initialCards} from "./cards";
 import { createCard, deleteCard, handleLikeBtn } from "./card";
 import {openPopup, closePopup} from "./modal";
 
@@ -14,10 +13,6 @@ const textAfterStartRequest = "Сохранение...";
 /*Отрисовка 6-и карточек на странице*/
 export const list = document.querySelector(".places__list");
 export const template = document.querySelector("#card-template");
-/* initialCards.forEach((item) => {
-    list.append(createCard(item, template, deleteCard, handleLikeBtn, handleImageCard));
-});
- */
 
 const validationConfig = {
     formSelector: '.popup__form',
@@ -28,18 +23,10 @@ const validationConfig = {
     errorClass: 'popup__error_visible'
 }
 
-
-
 /*Поиск полей и описания*/
 const profilTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileImage = document.querySelector('.profile__image');
-
-const clearConfig = {
-    inputSelector: '.popup__input',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible',
-}
 
 /*Поиск форм. Всего - 2 шт*/
 const editForm = document.querySelector("[name=edit-profile]");
@@ -91,17 +78,13 @@ btnPopupEditProfile.addEventListener("click", function(evt){
     editForm.name.value = profilTitle.textContent;
     editForm.description.value = profileDescription.textContent;
     openPopup(popupEditProfile);
-    clearValidation(editForm, {
-        ...clearConfig,
-        title: profilTitle.textContent,
-        description: profileDescription.textContent,
-    });
+    clearValidation(editForm, validationConfig);
 });
 
 btnPopupNewCard.addEventListener("click", function(evt){
     evt.stopPropagation();
     openPopup(popupNewCard);
-    clearValidation(addForm, clearConfig);
+    clearValidation(addForm, validationConfig);
 });
 
 btnpAvatarProfile.addEventListener("click", function(evt) {

@@ -66,24 +66,19 @@ function toogleButtonState(inputList, buttonELement, disabledButtonClass){
     }
 }
 
-export function clearValidation(profileForm, validationConfig) {
-    const errorElements = profileForm.querySelectorAll(`.${validationConfig.errorClass}`);
+export function clearValidation(form, validationConfig) {
+    const errorElements = form.querySelectorAll(`.${validationConfig.errorClass}`);
     /*Очистил поля span*/
     Array.from(errorElements).forEach(errElement => {
         errElement.classList.remove(validationConfig.errorClass);
         errElement.textContent = "";
     });
-    const inputElements = profileForm.querySelectorAll(`${validationConfig.inputSelector}`);
+    const inputElements = Array.from(form.querySelectorAll(`${validationConfig.inputSelector}`));
     /*Очистилил поля input от текстак*/
-    Array.from(inputElements).forEach((inpElement) => {
-        inpElement.value = "";
-        inpElement.classList.remove(validationConfig.inputErrorClass);
+    inputElements.forEach((inpElement) => {
+        hideInputErrorMessage(form, inpElement, validationConfig.inpErrClass, validationConfig.errorClass)
     });
-
-    if(profileForm.id === 'edit-profile'){
-        profileForm.elements["name"].value = validationConfig.title;
-        profileForm.elements["description"].value = validationConfig.description;
-        return;
-    }
+    const buttonSubmitFromForm = form.querySelector(validationConfig.submitButtonSelector);
+    toogleButtonState(inputElements, buttonSubmitFromForm, validationConfig.inactiveButtonClass);
 }
 
